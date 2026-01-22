@@ -1,38 +1,63 @@
-import StatusBadge from "./StatusBadge"
+import { useEffect, useState } from "react"
+import { authHeader } from "../utils/authHeader"
 
-const data=[
- {id:"QT-1023",client:"Al Noor Trading",amount:"AED 12,500",status:"Pending",date:"16 Jan 2026"},
- {id:"QT-1022",client:"Desert Build LLC",amount:"AED 8,900",status:"Approved",date:"15 Jan 2026"},
- {id:"QT-1021",client:"BlueWave Services",amount:"AED 4,300",status:"Draft",date:"14 Jan 2026"}
-]
+export default function RecentTable() {
+  const [quotations, setQuotations] = useState([])
+  const [loading, setLoading] = useState(true)
 
-export default function RecentTable(){
+  useEffect(() => {
+    fetch("http://localhost:5000/api/quotations", {
+      headers: authHeader()
+    })
+      .then(res => res.json())
+      .then(data => {
+        setQuotations(data)
+        setLoading(false)
+      })
+      .catch(err => {
+        console.error(err)
+        setLoading(false)
+      })
+  }, [])
+
+  if (loading) {
+    return <p style={{ color: "#94a3b8" }}>Loading recent quotations…</p>
+  }
+
+  if (!quotations.length) {
+    return <p style={{ color: "#94a3b8" }}>No quotations yet</p>
+  }
+
   return (
-    <div style={{
-      marginTop:"28px",
-      background:"linear-gradient(180deg,#111827,#0f172a)",
-      border:"1px solid var(--border)",
-      borderRadius:"18px",
-      padding:"22px",
-      boxShadow:"0 40px 80px rgba(0,0,0,.45)"
-    }}>
-      <h3 style={{marginBottom:"16px"}}>Recent Quotations</h3>
-      <table style={{width:"100%", borderCollapse:"collapse"}}>
+    <div style={card}>
+      <h3 style={{ marginBottom: "14px" }}>Recent Quotations</h3>
+
+      <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
-          <tr style={{color:"var(--muted)", fontSize:"12px"}}>
-            <th align="left">Quotation</th><th align="left">Client</th>
-            <th align="left">Amount</th><th align="left">Status</th><th align="left">Date</th>
+          <tr style={{ color: "#9ca3af", textAlign: "left" }}>
+            <th>Client</th>
+            <th>Amount</th>
+            <th>Status</th>
           </tr>
         </thead>
+
         <tbody>
-          {data.map(r=>(
-            <tr key={r.id} style={{borderTop:"1px solid var(--border)"}}>
-              <td>{r.id}</td><td>{r.client}</td><td>{r.amount}</td>
-              <td><StatusBadge status={r.status}/></td><td>{r.date}</td>
+          {quotations.map(q => (
+            <tr key={q._id} style={{ borderTop: "1px solid #1f2937" }}>
+              <td>{q.clientName}</td>
+              <td>AED {q.grandTotal}</td>
+              <td>{q.status}</td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
   )
+}
+
+const card = {
+  background: "#0b1220",
+  border: "1px solid #1f2937",
+  borderRadius: "14px",
+  padding: "20px"
 }
