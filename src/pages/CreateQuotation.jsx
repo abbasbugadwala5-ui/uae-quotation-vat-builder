@@ -12,38 +12,42 @@ export default function CreateQuotation() {
   const [items, setItems] = useState([{ name: "", qty: 1, price: 0 }])
   const navigate = useNavigate()
 
-  const handleCreateQuotation = async () => {
-    const formattedItems = items.map(i => ({
-      description: i.name,
-      quantity: i.qty,
-      rate: i.price,
-    }))
+const handleCreateQuotation = async () => {
+  const formattedItems = items.map(i => ({
+    description: i.name,
+    quantity: i.qty,
+    rate: i.price,
+  }))
 
-    const quotationData = {
-      clientName: client,
-      items: formattedItems,
-    }
+  const quotationData = {
+    clientName: client,
+    items: formattedItems,
+  }
 
-    try {
-      const res = await fetch("http://localhost:5000/api/quotations", {
+  try {
+    const res = await fetch(
+      `${import.meta.env.VITE_API_BASE}/api/quotations`,
+      {
         method: "POST",
         headers: authHeader(),
         body: JSON.stringify(quotationData),
-      })
-
-      const data = await res.json()
-
-      if (!res.ok) {
-        alert(data.message || "Failed to create quotation")
-        return
       }
+    )
 
-      alert("Quotation created successfully ✅")
-      navigate("/preview", { state: data })
-    } catch {
-      alert("Server error")
+    const data = await res.json()
+
+    if (!res.ok) {
+      alert(data.message || "Failed to create quotation")
+      return
     }
+
+    alert("Quotation created successfully ✅")
+    navigate("/preview", { state: data })
+
+  } catch (err) {
+    alert("Server error")
   }
+}
 
   const subtotal = items.reduce((s, i) => s + i.qty * i.price, 0)
   const { vat, total } = calculateVAT(subtotal)
