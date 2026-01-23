@@ -10,6 +10,10 @@ const vatRoutes = require("./routes/vat")
 const dashboardRoutes = require("./routes/dashboard")
 
 const app = express()
+app.get("/", (req, res) => {
+  res.send("UAE Quotation API is running 🚀")
+})
+
 app.get("/test", (req, res) => {
   res.send("API WORKING")
 })
