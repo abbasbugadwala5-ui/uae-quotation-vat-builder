@@ -10,6 +10,9 @@ const vatRoutes = require("./routes/vat")
 const dashboardRoutes = require("./routes/dashboard")
 
 const app = express()
+app.get("/test", (req, res) => {
+  res.send("API WORKING")
+})
 
 // 🔥 BODY PARSER MUST BE BEFORE ROUTES
 app.use(cors())
