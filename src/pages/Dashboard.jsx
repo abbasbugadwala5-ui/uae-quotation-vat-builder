@@ -43,7 +43,8 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/dashboard/stats", {
+    fetch(`${import.meta.env.VITE_API_BASE}/api/dashboard/stats`, {
+
       headers: authHeader()
     })
       .then(res => res.json())
