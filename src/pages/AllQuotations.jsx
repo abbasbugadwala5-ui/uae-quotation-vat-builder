@@ -12,7 +12,8 @@ export default function AllQuotations() {
   }, [])
 
   const fetchQuotations = () => {
-    fetch("http://localhost:5000/api/quotations", {
+    fetch(`${import.meta.env.VITE_API_BASE}/api/quotations`, {
+
       headers: authHeader(),
     })
       .then(res => res.json())
@@ -30,9 +31,9 @@ export default function AllQuotations() {
     try {
       setDeletingId(id)
 
-      const res = await fetch(
-        `http://localhost:5000/api/quotations/${id}`,
-        {
+      const res = await 
+       fetch(`${import.meta.env.VITE_API_BASE}/api/quotations/${id}`, {
+
           method: "DELETE",
           headers: authHeader(),
         }
