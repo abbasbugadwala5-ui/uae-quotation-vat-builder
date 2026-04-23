@@ -1,12 +1,17 @@
 const mongoose = require("mongoose")
 
+let isConnected = false
+
 const connectDB = async () => {
+  if (isConnected) return
+
   try {
-    await mongoose.connect(process.env.MONGO_URI)
-    console.log("MongoDB connected")
+    const conn = await mongoose.connect(process.env.MONGO_URI)
+    isConnected = conn.connections[0].readyState
+    console.log("MongoDB Connected ✅")
   } catch (error) {
-    console.error("MongoDB connection failed:", error.message)
-    // ❗ DO NOT crash the process on Render
+    console.error("MongoDB connection failed ❌:", error.message)
+    throw error
   }
 }
 
